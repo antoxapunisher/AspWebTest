@@ -1,0 +1,23 @@
+﻿
+.Button
+{
+    background: #2e476d;
+    color: #ffffff;
+    font-size: 14px;
+    font-family:'Segoe UI';
+    font-weight:bold;
+    padding: 3px 10px;
+    border-bottom: 3px solid #27153d;
+    border: none;
+    border-radius: 5px;
+}
+
+    .Button:hover {
+        background: #27153d;
+        border-bottom: 0px solid #2e476d;
+    }
+
+    .Button:focus
+    {
+        outline: none;
+    }
