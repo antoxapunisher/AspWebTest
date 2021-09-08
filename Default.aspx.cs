@@ -20,38 +20,63 @@ public partial class _Default : System.Web.UI.Page
         _connection = new SqlConnection(connectionString);
         _connection.Open();
 
-        PhoneTxt.MaxLength = 9;
-        BirthTxt.MaxLength = 10;
-    }
+       PhoneTxt.MaxLength = 12;
+
+        if (!Page.IsPostBack)
+        {
+            for (int i =1971; i <= 2003 ; i++)
+            {
+                DropdownList1.Items.Add(i.ToString());
+
+            }
+            for (int i = 2; i <= 12; i++)
+            {
+                if(i<=9)
+                {
+                    DropdownList2.Items.Add("0"+i.ToString());
+                }
+                else
+                {
+                    DropdownList2.Items.Add(i.ToString());
+                }
+          
+
+            }
+            for (int i = 2; i <= 31; i++)
+            {
+               
+                if (i <= 9)
+                {
+                    DropdownList3.Items.Add("0" + i.ToString());
+                }
+                else
+                {
+                    DropdownList3.Items.Add(i.ToString());
+                }
+
+            }
+        }
+
+            }
 
   
-    protected void GridView1_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        
-    }
-
-    protected void btnOpenPopUp_Click1(object sender, EventArgs e)
-    {
-        mpePopUp.Show();
-       
-     mybody.Style[HtmlTextWriterStyle.BackgroundColor] = " rgba(102, 102, 102, 0.9)";
-        
-    }
+   
 
     protected void btnOk_Click(object sender, EventArgs e)
     {
-       
+       // mybody.Style[HtmlTextWriterStyle.BackgroundColor] = " rgba(102, 102, 102, 0.9)";
 
         if (btnOk.Text == "Добавить")
         {
             try
             {
+                string dater = DropdownList1.Text + "-" + DropdownList2.Text + "-" + DropdownList3.Text;
                 SqlCommand command = new SqlCommand("INSERT INTO Contacts (Name, MobilePhone, JobTitle, BirthDate) VALUES (@Name, @MobilePhone, @JobTitle, @BirthDate)", _connection);
                 // Инициализация переменных в запросе.
                 command.Parameters.AddWithValue("Name", NameTxt.Text);
                 command.Parameters.AddWithValue("MobilePhone", PhoneTxt.Text);
                 command.Parameters.AddWithValue("JobTitle", JobTxt.Text);
-                command.Parameters.AddWithValue("BirthDate", BirthTxt.Text);
+                command.Parameters.AddWithValue("BirthDate", dater);
                 // Выполнение запроса.
                 command.ExecuteNonQuery();
                 mpePopUp.Hide();
@@ -65,16 +90,13 @@ public partial class _Default : System.Web.UI.Page
         else if (btnOk.Text == "Сохранить")
         {
             try {
-                SqlCommand command = new SqlCommand("UPDATE Contacts SET Name = @Name, MobilePhone = @MobilePhone, JobTitle = @JobTitle, BirthDate = @BirthDate WHERE Id = @Id", _connection);
-                command.Parameters.AddWithValue("Name", NameTxt.Text);
-                char mp = Convert.ToChar(PhoneTxt.Text);
-                command.Parameters.AddWithValue("MobilePhone", mp);
-                command.Parameters.AddWithValue("JobTitle", JobTxt.Text);
-                DateTime ExpiryDate = DateTime.ParseExact(BirthTxt.Text, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
-              command.Parameters.AddWithValue("BirthDate", ExpiryDate);
-                command.Parameters.AddWithValue("Id", idTxt.Text);
-                command.ExecuteNonQuery();
+                string dater = DropdownList1.Text+"-"+ DropdownList2.Text+"-"+DropdownList3.Text;
+                SqlCommand command = new SqlCommand("UPDATE Contacts SET Name=N'"+ NameTxt.Text+"', MobilePhone=N'"+PhoneTxt.Text+"', JobTitle=N'"+JobTxt.Text+"', BirthDate=N'"+dater+ "' WHERE Id='"+idTxt.Text+"'", _connection);                command.ExecuteNonQuery();
+              
                 mpePopUp.Hide();
+                SqlDataSource1.UpdateCommand = "Select * from Contacts";
+                SqlDataSource1.Update();
+                GridView1.DataSourceID = "SqlDataSource1";
             }
             catch (Exception ex)
             {
@@ -99,14 +121,11 @@ public partial class _Default : System.Web.UI.Page
         NameTxt.Text = string.Empty;
         PhoneTxt.Text = string.Empty;
         JobTxt.Text = string.Empty;
-        BirthTxt.Text = string.Empty;
+        DropdownList1.Text = DropdownList1.Items[0].Value;
+        DropdownList2.Text = DropdownList2.Items[0].Value;
+        DropdownList3.Text = DropdownList3.Items[0].Value;
+    }
 
-    }
-   
-    protected void DeleteBtn_Click1(object sender, EventArgs e)
-    {
-        
-    }
 
 
 
@@ -115,11 +134,9 @@ public partial class _Default : System.Web.UI.Page
         btnOk.Text = "Сохранить";
         
         if (e.CommandName=="EditBtn_Click1")
-        {
+        {  
             int RowIndex;
-            
             RowIndex = Convert.ToInt32(e.CommandArgument);
-            
             mpePopUp.Show();
             ModalHead.Text = "Редактировать контакт";
             GridViewRow row = GridView1.SelectedRow;
@@ -132,7 +149,11 @@ public partial class _Default : System.Web.UI.Page
             NameTxt.Text = name;
             PhoneTxt.Text = number;
             JobTxt.Text = job;
-            BirthTxt.Text = birth;
+
+
+            DropdownList1.Text = birth.Substring(0, birth.Length - 6);
+            DropdownList2.Text = birth[5].ToString()+birth[6].ToString();
+            DropdownList3.Text = birth.Substring(8);
         }
 
         
@@ -143,4 +164,48 @@ public partial class _Default : System.Web.UI.Page
         String idtext = GridView1.SelectedRow.Cells[0].Text;
         idTxt.Text = idtext;
     }
+
+    bool ArgsValidation(out int x)
+    {
+        bool xIsCorrect = Int32.TryParse(PhoneTxt.Text, out x);
+        
+        if (!(xIsCorrect))
+        {
+ErrorOutput.Text="Ошибка";
+            return true;
+        }
+        return false;
+    }
+    protected void PhoneTxt_TextChanged(object sender, EventArgs e)
+    {
+        int x;
+
+        if (ArgsValidation(out x))
+        {
+            return;
+        }
+
+    }
+
+    //protected void CustomValidator1_ServerValidate(object source, ServerValidateEventArgs args)
+    //{
+    //    int value;
+    //    if (Int32.TryParse(args.Value, out value))
+    //    {
+    //        if (value != 0)
+    //        {
+    //            args.IsValid = true;
+    //        }
+    //        else
+    //        {
+    //            args.IsValid = false;
+    //            (source as Label).Text = "Значение должно быть цифрами ";
+    //        }
+    //    }
+    //    else
+    //    {
+    //        args.IsValid = false;
+    //        (source as Label).Text = "Введите номер";
+    //    }
+    //}
 }

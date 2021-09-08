@@ -21,3 +21,8 @@
     {
         outline: none;
     }
+
+    .idBound{
+        max-width: 0px;
+       opacity: 0.4;
+    }
