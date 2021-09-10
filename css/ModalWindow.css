@@ -1,13 +1,14 @@
 ﻿.pnlBackGround {
     background: #c9d5e5;
-    height: 400px;
+    height: 350px;
     width: 500px;
     box-shadow: 0 0 5px 2px;
+    
 }
 
 #Header
 {
-    height:10%;
+    height:25px;
     width:100%;
     background: #1c1645;
     color:white;

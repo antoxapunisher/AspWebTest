@@ -22,7 +22,35 @@
         outline: none;
     }
 
-    .idBound{
-        max-width: 0px;
-       opacity: 0.4;
+.buttonCancel {
+    background: #ea3838;
+    color: #ffffff;
+    font-size: 14px;
+    justify-content:center;
+    font-family: 'Segoe UI';
+    font-weight: bold;
+    padding: 3px 10px;
+    
+    border: none;
+
+}
+
+    .buttonCancel:hover {
+        background: #ff0000;
+        
+    }
+
+#btnOk {
+    background: #2e476d;
+    color: #ffffff;
+    font-size: 14px;
+    font-family: 'Segoe UI';
+    font-weight: bold;
+    padding: 3px 10px;
+    border-bottom: 3px solid #27153d;
+    border: none;
+    border-radius: 5px;
+}
+    #btnOk:hover {
+        background: #27153d;
     }
